@@ -83,7 +83,7 @@ router.put("/:id", (req, res) => {
 
   Posts.update(id, changes)
     .then(updatedPost => {
-      console.log(updatedPost)
+      console.log(updatedPost);
       if (!updatedPost) {
         return res.status(404).json({
           message: "The post with the specified ID does not exist"
@@ -98,6 +98,29 @@ router.put("/:id", (req, res) => {
     .catch(err => {
       res.status(500).json({
         error: "THe post information could not be modified"
+      });
+    });
+});
+
+// DELETE
+
+router.delete("/:id", (req, res) => {
+  const id = req.params.id;
+
+  Posts.remove(id)
+    .then(post => {
+      if (!post) {
+        return res.status(404).json({
+          message: "The post with the specified ID does not exist"
+        });
+      } else {
+        res.status(204).end();
+      }
+    })
+    .catch(err => {
+      res.status(500).json({
+        success: false,
+        error: "The post could not be removed"
       });
     });
 });
