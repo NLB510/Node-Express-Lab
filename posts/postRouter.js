@@ -48,7 +48,7 @@ router.get("/:id", (req, res) => {
 // POST
 
 router.post("/", (req, res) => {
-  console.log(req)
+  console.log(req);
   const { title, contents } = req.body;
   const newPost = req.body;
   if (!title || !contents) {
@@ -65,6 +65,39 @@ router.post("/", (req, res) => {
       res.status(500).json({
         success: false,
         error: "There was an error while saving the post to the database"
+      });
+    });
+});
+
+// PUT
+
+router.put("/:id", (req, res) => {
+  const id = req.params.id;
+  const changes = req.body;
+
+  if (!changes.title || !changes.contents) {
+    return res.status(400).json({
+      errorMessage: "Please provide title and contents for the post"
+    });
+  }
+
+  Posts.update(id, changes)
+    .then(updatedPost => {
+      console.log(updatedPost)
+      if (!updatedPost) {
+        return res.status(404).json({
+          message: "The post with the specified ID does not exist"
+        });
+      } else {
+        res.status(201).json({
+          success: true,
+          changes
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: "THe post information could not be modified"
       });
     });
 });
